@@ -1,83 +1,291 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tempe Ariff - Sistem Akaun</title>
-<style>
-:root{--g:#214d36;--g2:#347b51;--bg:#f4f7f4;--ink:#203128;--muted:#6b786f;--line:#e0e8e2;--red:#b43b3b;--gold:#a66c12}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}header{background:linear-gradient(135deg,var(--g),#347b51);color:white;padding:23px 5%}header h1{margin:0 0 6px;font-size:25px}header p{margin:0;opacity:.85}main{max-width:1200px;margin:22px auto;padding:0 16px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.nav button{background:#e6eee8;color:var(--g);border:1px solid var(--line)}.nav button.active{background:var(--g2);color:white}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.card{background:white;border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:0 2px 8px #163d2010;margin-bottom:15px}.metric small{color:var(--muted);display:block;margin-bottom:8px}.metric strong{font-size:21px}.positive{color:var(--g2)}.negative{color:var(--red)}h2{font-size:18px;margin:0 0 15px}.layout{display:grid;grid-template-columns:340px 1fr;gap:15px}.field{margin-bottom:11px}.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:white;font-size:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}button{border:0;border-radius:8px;padding:10px 13px;font-weight:bold;cursor:pointer}.primary{background:var(--g2);color:white;width:100%}.secondary{background:#eaf1ec;color:var(--g)}.danger{background:#fff0f0;color:var(--red)}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar input,.toolbar select{padding:9px;border:1px solid var(--line);border-radius:8px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-size:12px}td.amount{text-align:right;font-weight:bold}.empty{text-align:center;color:var(--muted);padding:22px}.notice{font-size:12px;color:var(--muted);line-height:1.5}.actions{display:flex;gap:8px;flex-wrap:wrap}.tag{padding:4px 8px;border-radius:20px;background:#edf3ef;font-size:12px}.reportbox{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big{font-size:24px;font-weight:bold}.smallmuted{color:var(--muted);font-size:12px}.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.hidden{display:none!important}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr 1fr}}@media(max-width:500px){.grid{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.reportbox{grid-template-columns:1fr}}
-</style></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kewangan Tempe Ariff</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root { --primary: #d4a017; --secondary: #333; --success: #28a745; --danger: #dc3545; --info: #17a2b8; --light: #f8f9fa; --dark: #212529; }
+        body { background: #f4f4f4; color: var(--dark); }
+        
+        /* Header & Layout */
+        .header { background: linear-gradient(135deg, #b8860b, #d4a017); color: white; padding: 15px 30px; position: fixed; width: 100%; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        
+        .sidebar { position: fixed; left: 0; top: 70px; width: 240px; height: calc(100% - 70px); background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); overflow-y: auto; }
+        .sidebar nav { padding: 20px 0; }
+        .sidebar button { width: 100%; text-align: left; padding: 12px 25px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: #555; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+        .sidebar button:hover, .sidebar button.active { background: #fff8dc; color: #b8860b; font-weight: 600; border-left: 4px solid #d4a017; }
+        
+        .main-content { margin-left: 240px; margin-top: 70px; padding: 25px; min-height: calc(100vh - 70px); }
+        
+        /* Cards & Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #d4a017; }
+        .stat-card h3 { font-size: 13px; color: #777; margin-bottom: 8px; }
+        .stat-card .value { font-size: 24px; font-weight: 700; color: #333; }
+        .stat-card.income { border-left-color: #28a745; }
+        .stat-card.expense { border-left-color: #dc3545; }
+        .stat-card.cash { border-left-color: #17a2b8; }
+        .stat-card.bank { border-left-color: #6610f2; }
+        
+        /* Sections */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        h2 { font-size: 22px; margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px; }
+        
+        /* Buttons & Forms */
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .btn-primary { background: #d4a017; color: white; }
+        .btn-primary:hover { background: #b8860b; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        
+        .card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .card h3 { font-size: 16px; margin-bottom: 18px; color: #444; }
+        
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #d4a017; }
+        
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        table th, table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #eee; }
+        table th { background: #f9f9f9; font-weight: 600; color: #555; }
+        table tr:hover { background: #fafafa; }
+        
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-success { color: #28a745; font-weight: 500; }
+        .text-danger { color: #dc3545; font-weight: 500; }
+        
+        .badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 18px; }
+        .close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
+        
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .search-input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; width: 250px; }
+        
+        .hidden { display: none !important; }
+        
+        @media print {
+            .sidebar, .header, .action-bar, .no-print { display: none !important; }
+            .main-content { margin: 0; padding: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; position: relative; top: 0; height: auto; }
+            .main-content { margin-left: 0; margin-top: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
 <body>
-<header><h1>Tempe Ariff — Sistem Rekod Perniagaan</h1><p>Pengurusan kewangan, jualan, hutang dan laporan perniagaan</p></header>
-<main>
-<div class="nav">
-<button class="active" data-page="dashboard">Dashboard</button><button data-page="transactions">Transaksi</button><button data-page="accounts">Tunai & Bank</button><button data-page="debts">Hutang</button><button data-page="invoices">Invois</button><button data-page="reports">Laporan</button><button data-page="settings">Tetapan</button>
+
+<!-- Header -->
+<div class="header">
+    <h1>🏭 Tempe Ariff</h1>
+    <p>Sistem Pengurusan Kewangan & Akaun Perniagaan</p>
 </div>
-<section class="page active" id="dashboard">
-<div class="grid">
-<div class="card metric"><small>Jumlah Pendapatan</small><strong id="totalIncome">RM0.00</strong></div><div class="card metric"><small>Jumlah Perbelanjaan</small><strong id="totalExpense">RM0.00</strong></div><div class="card metric"><small>Untung / Rugi</small><strong id="netProfit">RM0.00</strong></div><div class="card metric"><small>Baki Keseluruhan</small><strong id="totalBalance">RM0.00</strong></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <nav>
+        <button class="menu-btn active" data-section="dashboard">📊 Dashboard</button>
+        <button class="menu-btn" data-section="income">💰 Pendapatan</button>
+        <button class="menu-btn" data-section="expense">📝 Perbelanjaan</button>
+        <button class="menu-btn" data-section="transactions">📋 Transaksi</button>
+        <button class="menu-btn" data-section="cashbank">🏦 Tunai & Bank</button>
+        <button class="menu-btn" data-section="customers">👤 Hutang Pelanggan</button>
+        <button class="menu-btn" data-section="suppliers">🏬 Hutang Pembekal</button>
+        <button class="menu-btn" data-section="reports">📈 Laporan Kewangan</button>
+        <button class="menu-btn" data-section="owner">💼 Modal & Pemilik</button>
+        <button class="menu-btn" data-section="settings">⚙️ Tetapan</button>
+    </nav>
 </div>
-<div class="grid" style="margin-top:13px"><div class="card metric"><small>Baki Tunai</small><strong id="cashBalance">RM0.00</strong></div><div class="card metric"><small>Baki Bank</small><strong id="bankBalance">RM0.00</strong></div><div class="card metric"><small>Hutang Pelanggan</small><strong id="receivableTotal">RM0.00</strong></div><div class="card metric"><small>Hutang Pembekal</small><strong id="payableTotal">RM0.00</strong></div></div>
-<div class="card"><h2>Ringkasan Bulan Ini</h2><div class="reportbox"><div><span class="smallmuted">Pendapatan bulan ini</span><div class="big positive" id="monthIncome">RM0.00</div></div><div><span class="smallmuted">Perbelanjaan bulan ini</span><div class="big negative" id="monthExpense">RM0.00</div></div></div></div>
-</section>
-<section class="page" id="transactions">
-<div class="layout">
-<div class="card"><h2>Tambah Transaksi</h2><form id="txForm">
-<div class="field"><label>Jenis</label><select id="txType"><option value="income">Pendapatan</option><option value="expense">Perbelanjaan</option><option value="owner">Modal / Pengeluaran Pemilik</option><option value="transfer">Pindahan Tunai-Bank</option></select></div>
-<div class="field"><label>Kategori</label><select id="txCategory"></select></div>
-<div class="field"><label>Tarikh</label><input id="txDate" type="date" required></div>
-<div class="field"><label>Penerangan</label><input id="txDesc" placeholder="Contoh: Jualan tempe kepada kedai" required></div>
-<div class="row"><div class="field"><label>Jumlah RM</label><input id="txAmount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Akaun</label><select id="txAccount"><option>Tunai</option><option>Bank</option><option>DuitNow / QR</option><option>E-wallet</option></select></div></div>
-<div class="field"><label>Nama pihak (pilihan)</label><input id="txParty" placeholder="Pelanggan / pembekal"></div><button class="primary">Simpan Transaksi</button></form></div>
-<div class="card"><h2>Senarai Transaksi</h2><div class="toolbar"><input id="txSearch" placeholder="Cari transaksi"><input id="txMonth" type="month"><button class="secondary" onclick="exportCSV('transactions')">Eksport CSV</button></div><div class="table-wrap"><table><thead><tr><th>Tarikh</th><th>Jenis</th><th>Kategori</th><th>Penerangan</th><th>Akaun</th><th>Jumlah</th><th></th></tr></thead><tbody id="txRows"></tbody></table></div><div id="txEmpty" class="empty hidden">Tiada transaksi.</div></div>
-</div></section>
-<section class="page" id="accounts">
-<div class="card"><h2>Tetapan Baki Awal</h2><p class="notice">Masukkan baki tunai dan bank sedia ada sebelum mula menggunakan sistem. Nilai ini tidak dikira sebagai jualan atau untung.</p><form id="openingForm" class="formgrid"><div class="field"><label>Baki awal tunai (RM)</label><input id="openingCash" type="number" step="0.01"></div><div class="field"><label>Baki awal bank (RM)</label><input id="openingBank" type="number" step="0.01"></div><div class="field" style="align-self:end"><button class="primary">Simpan Baki Awal</button></div></form></div>
-<div class="grid"><div class="card metric"><small>Baki Tunai Semasa</small><strong id="cashCurrent">RM0.00</strong></div><div class="card metric"><small>Baki Bank Semasa</small><strong id="bankCurrent">RM0.00</strong></div><div class="card metric"><small>Jumlah Baki</small><strong id="allCurrent">RM0.00</strong></div><div class="card metric"><small>Modal Pemilik</small><strong id="ownerCapital">RM0.00</strong></div></div>
-<div class="card"><h2>Nota akaun</h2><p class="notice">Pindahan antara tunai dan bank direkod sebagai transaksi pindahan dan tidak menambah pendapatan atau perbelanjaan. Duit pemilik dimasukkan sebagai modal; pengeluaran peribadi direkod berasingan daripada kos operasi.</p></div></section>
-<section class="page" id="debts">
-<div class="layout">
-<div class="card"><h2>Tambah Rekod Hutang</h2><form id="debtForm"><div class="field"><label>Jenis</label><select id="debtType"><option value="receivable">Pelanggan berhutang (A/R)</option><option value="payable">Hutang kepada pembekal (A/P)</option></select></div><div class="field"><label>Nama</label><input id="debtName" required></div><div class="field"><label>Tarikh</label><input id="debtDate" type="date" required></div><div class="field"><label>Catatan</label><input id="debtNote" placeholder="Contoh: 20 pek tempe"></div><div class="field"><label>Jumlah (RM)</label><input id="debtAmount" type="number" min="0.01" step="0.01" required></div><button class="primary">Simpan Hutang</button></form></div>
-<div class="card"><h2>Senarai Hutang</h2><div class="table-wrap"><table><thead><tr><th>Jenis</th><th>Nama</th><th>Tarikh</th><th>Catatan</th><th>Jumlah</th><th>Bayar</th><th>Baki</th><th></th></tr></thead><tbody id="debtRows"></tbody></table></div><div id="debtEmpty" class="empty hidden">Tiada hutang direkodkan.</div></div>
-</div></section>
-<section class="page" id="invoices">
-<div class="layout"><div class="card"><h2>Buat Invois</h2><form id="invoiceForm"><div class="field"><label>Nama pelanggan</label><input id="invCustomer" required></div><div class="field"><label>Tarikh invois</label><input id="invDate" type="date" required></div><div class="field"><label>Butiran</label><input id="invDesc" placeholder="Contoh: Tempe 100 pek" required></div><div class="field"><label>Jumlah RM</label><input id="invAmount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Status</label><select id="invStatus"><option>Belum Bayar</option><option>Bayaran Separa</option><option>Selesai</option></select></div><button class="primary">Simpan Invois</button></form></div><div class="card"><h2>Senarai Invois</h2><div class="table-wrap"><table><thead><tr><th>No.</th><th>Tarikh</th><th>Pelanggan</th><th>Butiran</th><th>Jumlah</th><th>Status</th><th></th></tr></thead><tbody id="invRows"></tbody></table></div><div id="invEmpty" class="empty hidden">Tiada invois.</div></div></div></section>
-<section class="page" id="reports"><div class="card"><h2>Laporan Kewangan</h2><div class="toolbar"><label>Tempoh: <input type="month" id="reportMonth"></label><button class="secondary" onclick="exportCSV('report')">Eksport laporan CSV</button></div><div class="reportbox"><div><span class="smallmuted">Pendapatan</span><div class="big positive" id="rIncome">RM0.00</div></div><div><span class="smallmuted">Perbelanjaan operasi</span><div class="big negative" id="rExpense">RM0.00</div></div><div><span class="smallmuted">Untung / Rugi</span><div class="big" id="rProfit">RM0.00</div></div><div><span class="smallmuted">Modal pemilik</span><div class="big" id="rCapital">RM0.00</div></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h2>Ringkasan mengikut kategori</h2><div class="table-wrap"><table><thead><tr><th>Kategori</th><th>Jenis</th><th>Jumlah</th></tr></thead><tbody id="categoryRows"></tbody></table></div></div></section>
-<section class="page" id="settings"><div class="card"><h2>Backup dan Data</h2><p class="notice">Data aplikasi disimpan dalam local storage browser. Export backup untuk menyimpan salinan JSON. Import backup boleh memulihkan data pada browser/peranti lain.</p><div class="actions"><button class="secondary" onclick="backupData()">Muat turun Backup JSON</button><label class="secondary" style="padding:10px 13px;border-radius:8px;cursor:pointer">Import Backup<input type="file" id="importFile" accept=".json" class="hidden"></label><button class="danger" onclick="resetAll()">Reset Semua Data</button></div></div></section>
-</main>
-<script>
-const KEY='tempeAriffFinanceV2';
-let data=JSON.parse(localStorage.getItem(KEY)||'{"transactions":[],"debts":[],"invoices":[],"opening":{"cash":0,"bank":0}}');
-const cats={income:['Jualan Tempe','Jualan Produk Lain','Jualan Borong','Bayaran Pelanggan','Pendapatan Lain'],expense:['Kacang Soya','Ragi','Pembungkusan / Plastik','Penghantaran / Petrol','Bil Elektrik','Bil Air','Sewa Premis','Gaji','Peralatan / Mesin','Penyelenggaraan','Promosi / Marketing','Perbelanjaan Lain'],owner:['Modal Pemilik','Pengeluaran Pemilik'],transfer:['Pindahan Tunai ke Bank','Pindahan Bank ke Tunai']};
-const $=id=>document.getElementById(id);const fmt=n=>'RM'+Number(n||0).toLocaleString('ms-MY',{minimumFractionDigits:2,maximumFractionDigits:2});const today=new Date().toISOString().slice(0,10);
-['txDate','debtDate','invDate'].forEach(id=>$(id).value=today);$('reportMonth').value=today.slice(0,7);
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.page).classList.add('active');render()});
-function setCats(){let type=$('txType').value; $('txCategory').innerHTML=cats[type].map(c=>`<option>${c}</option>`).join('');$('txAccount').disabled=type==='transfer';if(type==='transfer')$('txAccount').value='Tunai'}
-$('txType').onchange=setCats;setCats();
-$('txForm').onsubmit=e=>{e.preventDefault();let t={id:Date.now(),type:$('txType').value,category:$('txCategory').value,date:$('txDate').value,desc:$('txDesc').value.trim(),amount:+$('txAmount').value,account:$('txAccount').value,party:$('txParty').value.trim()};data.transactions.push(t);save();$('txDesc').value='';$('txAmount').value='';$('txParty').value=''};
-$('openingForm').onsubmit=e=>{e.preventDefault();data.opening={cash:+$('openingCash').value||0,bank:+$('openingBank').value||0};save();alert('Baki awal disimpan.')};
-$('debtForm').onsubmit=e=>{e.preventDefault();data.debts.push({id:Date.now(),type:$('debtType').value,name:$('debtName').value,date:$('debtDate').value,note:$('debtNote').value,amount:+$('debtAmount').value,paid:0});save();$('debtForm').reset();$('debtDate').value=today};
-$('invoiceForm').onsubmit=e=>{e.preventDefault();data.invoices.push({id:Date.now(),no:'TA-'+Date.now().toString().slice(-6),customer:$('invCustomer').value,date:$('invDate').value,desc:$('invDesc').value,amount:+$('invAmount').value,status:$('invStatus').value});save();$('invoiceForm').reset();$('invDate').value=today};
-function deleteTx(id){if(confirm('Padam transaksi ini?')){data.transactions=data.transactions.filter(t=>t.id!==id);save()}}
-function payDebt(id){let d=data.debts.find(x=>x.id===id);let amt=+prompt('Masukkan jumlah bayaran (RM). Baki: '+fmt(d.amount-d.paid));if(amt>0&&amt<=d.amount-d.paid){d.paid+=amt;save()}}
-function delDebt(id){if(confirm('Padam rekod hutang?')){data.debts=data.debts.filter(d=>d.id!==id);save()}}
-function delInvoice(id){if(confirm('Padam invois?')){data.invoices=data.invoices.filter(i=>i.id!==id);save()}}
-function cashBank(){let cash=data.opening.cash,bank=data.opening.bank;data.transactions.forEach(t=>{let a=t.account==='Bank'||t.account==='DuitNow / QR'?'bank':'cash';if(t.type==='income') (a==='cash'?cash+=t.amount:bank+=t.amount);if(t.type==='expense')(a==='cash'?cash-=t.amount:bank-=t.amount);if(t.type==='owner'&&t.category==='Modal Pemilik')(a==='cash'?cash+=t.amount:bank+=t.amount);if(t.type==='owner'&&t.category==='Pengeluaran Pemilik')(a==='cash'?cash-=t.amount:bank-=t.amount);if(t.type==='transfer'){if(t.category==='Pindahan Tunai ke Bank'){cash-=t.amount;bank+=t.amount}else{bank-=t.amount;cash+=t.amount}}});return{cash,bank}}
-function render(){let tx=data.transactions,inc=tx.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),exp=tx.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0),profit=inc-exp,cb=cashBank(),month=new Date().toISOString().slice(0,7),mi=tx.filter(t=>t.type==='income'&&t.date.startsWith(month)).reduce((s,t)=>s+t.amount,0),me=tx.filter(t=>t.type==='expense'&&t.date.startsWith(month)).reduce((s,t)=>s+t.amount,0),ar=data.debts.filter(d=>d.type==='receivable').reduce((s,d)=>s+d.amount-d.paid,0),ap=data.debts.filter(d=>d.type==='payable').reduce((s,d)=>s+d.amount-d.paid,0),capital=tx.filter(t=>t.type==='owner'&&t.category==='Modal Pemilik').reduce((s,t)=>s+t.amount,0);
-$('totalIncome').textContent=fmt(inc);$('totalExpense').textContent=fmt(exp);$('netProfit').textContent=fmt(profit);$('netProfit').className=profit>=0?'positive':'negative';$('totalBalance').textContent=fmt(cb.cash+cb.bank);$('cashBalance').textContent=fmt(cb.cash);$('bankBalance').textContent=fmt(cb.bank);$('receivableTotal').textContent=fmt(ar);$('payableTotal').textContent=fmt(ap);$('monthIncome').textContent=fmt(mi);$('monthExpense').textContent=fmt(me);$('cashCurrent').textContent=fmt(cb.cash);$('bankCurrent').textContent=fmt(cb.bank);$('allCurrent').textContent=fmt(cb.cash+cb.bank);$('ownerCapital').textContent=fmt(capital);$('openingCash').value=data.opening.cash;$('openingBank').value=data.opening.bank;
-let q=$('txSearch').value.toLowerCase(),m=$('txMonth').value;let filtered=tx.filter(t=>(!m||t.date.startsWith(m))&&(`${t.desc} ${t.category} ${t.party||''}`).toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));
-$('txRows').innerHTML=filtered.map(t=>`<tr><td>${t.date}</td><td>${t.type==='income'?'Pendapatan':t.type==='expense'?'Perbelanjaan':t.type==='owner'?'Modal/Pengeluaran':'Pindahan'}</td><td>${t.category}</td><td>${esc(t.desc)}</td><td>${t.account}</td><td class="amount ${t.type==='income'?'positive':t.type==='expense'?'negative':''}">${t.type==='income'?'+':t.type==='expense'?'−':''}${fmt(t.amount)}</td><td><button class="danger" onclick="deleteTx(${t.id})">Padam</button></td></tr>`).join('');$('txEmpty').classList.toggle('hidden',filtered.length>0);
-$('debtRows').innerHTML=data.debts.map(d=>`<tr><td>${d.type==='receivable'?'Pelanggan':'Pembekal'}</td><td>${esc(d.name)}</td><td>${d.date}</td><td>${esc(d.note)}</td><td>${fmt(d.amount)}</td><td>${fmt(d.paid)} <button class="secondary" onclick="payDebt(${d.id})">Bayar</button></td><td>${fmt(d.amount-d.paid)}</td><td><button class="danger" onclick="delDebt(${d.id})">Padam</button></td></tr>`).join('');$('debtEmpty').classList.toggle('hidden',data.debts.length>0);
-$('invRows').innerHTML=data.invoices.map(i=>`<tr><td>${i.no}</td><td>${i.date}</td><td>${esc(i.customer)}</td><td>${esc(i.desc)}</td><td>${fmt(i.amount)}</td><td>${i.status}</td><td><button class="danger" onclick="delInvoice(${i.id})">Padam</button></td></tr>`).join('');$('invEmpty').classList.toggle('hidden',data.invoices.length>0);
-let rm=$('reportMonth').value,rt=tx.filter(t=>!rm||t.date.startsWith(rm)),ri=rt.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),re=rt.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0),rc=rt.filter(t=>t.type==='owner'&&t.category==='Modal Pemilik').reduce((s,t)=>s+t.amount,0);$('rIncome').textContent=fmt(ri);$('rExpense').textContent=fmt(re);$('rProfit').textContent=fmt(ri-re);$('rCapital').textContent=fmt(rc);let map={};rt.forEach(t=>{let k=t.category+'|'+t.type;map[k]=(map[k]||0)+t.amount});$('categoryRows').innerHTML=Object.entries(map).map(([k,v])=>{let [c,t]=k.split('|');return `<tr><td>${c}</td><td>${t}</td><td>${fmt(v)}</td></tr>`}).join('')||'<tr><td colspan="3">Tiada rekod</td></tr>'}
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-$('txSearch').oninput=render;$('txMonth').onchange=render;$('reportMonth').onchange=render;
-function exportCSV(which){let list=which==='report'?data.transactions.filter(t=>!$('reportMonth').value||t.date.startsWith($('reportMonth').value)):data.transactions;let csv='Tarikh,Jenis,Kategori,Penerangan,Akaun,Jumlah,Nama\\n'+list.map(t=>[t.date,t.type,t.category,'"'+(t.desc||'').replaceAll('"','""')+'"',t.account,t.amount,(t.party||'')].join(',')).join('\\n');download('tempe_ariff_transaksi.csv','\\ufeff'+csv)}
-function backupData(){download('tempe_ariff_backup.json',JSON.stringify(data,null,2))}
-function download(name,content){let blob=new Blob([content],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-$('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);save();alert('Backup berjaya diimport')}catch{alert('Fail backup tidak sah')}};r.readAsText(f)};
-function resetAll(){if(confirm('Padam semua transaksi, hutang, invois dan baki awal? Tindakan ini tidak boleh dibatalkan.')){data={transactions:[],debts:[],invoices:[],opening:{cash:0,bank:0}};save()}}
-render();
-</script></body></html>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- ============= DASHBOARD ============= -->
+    <section id="dashboard" class="section active">
+        <h2>📊 Dashboard Kewangan</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card income">
+                <h3>Pendapatan Hari Ini</h3>
+                <div class="value" id="today-income">RM 0.00</div>
+            </div>
+            <div class="stat-card expense">
+                <h3>Perbelanjaan Hari Ini</h3>
+                <div class="value" id="today-expense">RM 0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Untung Kasar</h3>
+                <div class="value" id="gross-profit">RM 0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Untung Bersih</h3>
+                <div class="value" id="net-profit">RM 0.00</div>
+            </div>
+            <div class="stat-card cash">
+                <h3>Baki Tunai</h3>
+                <div class="value" id="cash-balance">RM 0.00</div>
+            </div>
+            <div class="stat-card bank">
+                <h3>Baki Bank</h3>
+                <div class="value" id="bank-balance">RM 0.00</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📅 Ringkasan Jualan Bulanan</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Pilih Bulan & Tahun</label>
+                    <input type="month" id="summary-month" onchange="updateMonthlySummary()">
+                </div>
+            </div>
+            <div class="stats-grid" style="margin-top:15px;">
+                <div class="stat-card">
+                    <h3>Jualan Bulan Ini</h3>
+                    <div class="value" id="monthly-sales">RM 0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Perbelanjaan Bulan Ini</h3>
+                    <div class="value" id="monthly-expenses">RM 0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Untung Bersih Bulan Ini</h3>
+                    <div class="value" id="monthly-net">RM 0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🕒 Transaksi Terkini</h3>
+            <div class="table-container">
+                <table id="recent-transactions">
+                    <thead>
+                        <tr>
+                            <th>Tarikh</th>
+                            <th>Perihal</th>
+                            <th>Kategori</th>
+                            <th>Jumlah</th>
+                            <th>Jenis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-trans-body">
+                        <tr><td colspan="5" class="text-center">Belum ada rekod transaksi</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============= PENDAPATAN ============= -->
+    <section id="income" class="section">
+        <h2>💰 Rekod Pendapatan</h2>
+        
+        <div class="card">
+            <h3>Tambah Rekod Pendapatan Baru</h3>
+            <form id="income-form" class="form-row">
+                <div class="form-group">
+                    <label>Tarikh *</label>
+                    <input type="date" id="inc-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori *</label>
+                    <select id="inc-category" required>
+                        <option value="">Pilih Kategori</option>
+                        <option value="Jualan Tempe">Jualan Tempe</option>
+                        <option value="Jualan Produk Sampingan">Jualan Produk Sampingan</option>
+                        <option value="Jualan Borong">Jualan Borong</option>
+                        <option value="Jualan COD">Jualan COD</option>
+                        <option value="Bayaran Pelanggan">Bayaran Pelanggan</option>
+                        <option value="Pendapatan Lain-lain">Pendapatan Lain-lain</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah (RM) *</label>
+                    <input type="number" step="0.01" min="0" id="inc-amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Kaedah Bayaran</label>
+                    <select id="inc-method">
+                        <option value="Tunai">Tunai</option>
+                        <option value="Bank">Pindahan Bank</option>
+                        <option value="DuitNow">DuitNow / QR</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1; min-width:200px;">
+                    <label>Penerangan</label>
+                    <input type="text" id="inc-desc" placeholder="Contoh: Jualan harian kedai">
+                </div>
+                <div class="form-group" style="align-self: flex-end;">
+                    <button type="submit" class="btn btn-success">✅ Simpan</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="action-bar">
+                <h3>Senarai Pendapatan</h3>
+                <input type="text" class="search-input" placeholder="Cari rekod..." id="search-income" oninput="filterTable('income-table', this.value)">
+            </div>
+            <div class="table-container">
+                <table id="income-table">
+                    <thead>
+                        <tr>
+                            <th>Tarikh</th>
+                            <th>Kategori</th>
+                            <th>Penerangan</th>
+                            <th>Jumlah (RM)</th>
+                            <th>Kaedah</th>
+                            <th class="no-print">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="income-body">
+                        <tr><td colspan="6" class="text-center">Belum ada rekod pendapatan</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============= PERBELANJAAN ============= -->
+    <section id="expense" class="section">
+        <h2>📝 Rekod Perbelanjaan</h2>
+        
+        <div class="card">
+            <h3>Tambah Rekod Perbelanjaan Baru</h3>
+            <form id="expense-form" class="form-row">
+                <div class="form-group">
+                    <label>Tarikh *</label>
+                    <input type="date" id="exp-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori *</label>
+                    <select id="exp-category" required>
+                        <option value="">Pilih Kategori</option>
+                        <option value="Pembelian Kacang Soya">Pembelian Kacang Soya</option>
+                        <option value="Ragi">Ragi</option>
+                        <option value="Plastik Pembungkusan">Plastik Pembungkusan</option>
+                        <option value="Bahan Pengeluaran">Barang Dapur & Bahan Pengeluaran</option>
+                        <option value="
